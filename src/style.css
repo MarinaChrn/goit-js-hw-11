@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.search-form {
+    background-color: rgb(79, 92, 181);
+    width: 100%;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    border-radius: 5px;
+    height: 25px;
+    width: 200px;
+    padding-left: 10px;
+    border: none;
+}
+
+.button-submit {
+    border-radius: 5px;
+    height: 28px;
+    width: 80px;
+    border: none;
+    cursor: pointer;
+}
+
+.button-submit:focus, .button-submit:hover {
+    background-color: rgb(226, 236, 208);
+}
+
+:root {
+    --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --animation-duration: 250ms;
+  }
+  
+  .gallery {
+    display: grid;
+    max-width: 1270px;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    grid-auto-rows: 270px;
+    grid-gap: 12px;
+    justify-content: center;
+    padding: 0;
+    list-style: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .photo-card {
+    position: relative;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+  }
+  
+  .photo-card:hover {
+    transform: scale(1.03);
+  }
+  
+  .gallery__image {
+    height: 190px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform var(--animation-duration) var(--timing-function);
+  }
+
+  .info{
+    margin: 0px 20px;
+    display: flex;
+    justify-content: space-between;
+    }
+
+  .info-item {
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    color: black;
+    gap: 7px;
+    }
+
+.grey {
+    color: #717171;
+}
+
+.load-more-container {
+  text-align: center;
+}
+
+.load-more {
+  background-color: rgb(79, 92, 181);
+  margin: 0 auto;
+  color: #fff;
+  width: 150px;
+  height: 30px;
+  border-radius: 3px;
+  border: none;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.load-more:focus, .load-more:hover {
+  background-color: rgb(56, 66, 126);
+}
