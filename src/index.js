@@ -12,10 +12,10 @@ loadMore.classList.add("hidden");
 let inputValue;
 let page=1;
 let totalCards = 0;
-let totalHits;
+let totalHit;
 
 axios.defaults.baseURL = `https://pixabay.com/api`;
-const getInf= async (value,page)=> {
+const getInf= async (value,page, totalCards)=> {
     try{
         return await axios.get(`/?key=34548627-4253aa847fe52c38f81610ad9&q=${value}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`)
         .then(({data})=> {
@@ -24,15 +24,14 @@ const getInf= async (value,page)=> {
     } catch(error) {
         console.log(error);
     }
-    
-}
+  }
 
-function findEl(value,page,totalCards) {
-    getInf(value,page,totalCards).then((data, totalCards)=>createCards(data.hits, data.totalHits, totalCards))
+function findEl(value,page) {
+    getInf(value,page).then((data)=>createCards(data.hits, data.totalHits))
     .catch((error)=>console.log(error));
 }
 
-function createCards(array, totalHits, totalCards) {
+function createCards(array, totalHits) {
     const galleryItemsEl = array.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads})=>{
         return `<a class="photo-card" href="${largeImageURL}">
         <img src="${webformatURL}" alt="${tags}" loading="lazy" class="gallery__image"/>
@@ -58,6 +57,9 @@ function createCards(array, totalHits, totalCards) {
     }).join('');
     galleryEl.insertAdjacentHTML('beforeend', galleryItemsEl);
 
+    // totalCards+=40;
+    // console.log(totalHits, totalCards);
+
   const gallery = new SimpleLightbox('.gallery a', {
     overlay: true,
     captionDelay: 250,
@@ -69,6 +71,9 @@ function createCards(array, totalHits, totalCards) {
   else {
     loadMore.classList.remove("hidden");
   }
+
+  totalHit = totalHits;
+  return totalHit;
 }
 
 function render(e,page) {
@@ -76,20 +81,26 @@ function render(e,page) {
   if (inputValue!=inputEl.value) {
     galleryEl.innerHTML = '';
     page=1;
-    totalCards = 0;
+    totalCards = 40;
     
   }
   e.preventDefault();
   inputValue = inputEl.value;
   totalCards+=40;
-  findEl(inputValue,page,totalCards);
+  findEl(inputValue,page);
+  return totalCards;
 }
 
 formSubmit.addEventListener('submit', (e)=>{render(e ,page)})
 
 loadMore.addEventListener('click', (e)=>{
-  page += 1;
-  render(e,page+1);
+  if (totalCards<=totalHit) {
+    page += 1;
+    render(e,page+1);
+  }
+  else {
+    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+  }
 })
 
 
