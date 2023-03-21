@@ -13,21 +13,20 @@ let inputValue;
 let page=1;
 let totalCards = 0;
 let totalHit;
+let data;
 
 axios.defaults.baseURL = `https://pixabay.com/api`;
 const getInf= async (value,page, totalCards)=> {
     try{
-        return await axios.get(`/?key=34548627-4253aa847fe52c38f81610ad9&q=${value}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`)
-        .then(({data})=> {
-            return data;
-        });
+      data = await axios.get(`/?key=34548627-4253aa847fe52c38f81610ad9&q=${value}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=40`);
+      return data.data;
     } catch(error) {
         console.log(error);
     }
   }
 
 function findEl(value,page) {
-    getInf(value,page).then((data)=>createCards(data.hits, data.totalHits))
+    getInf(value,page).then(data=>createCards(data.hits, data.totalHits))
     .catch((error)=>console.log(error));
 }
 
@@ -57,50 +56,49 @@ function createCards(array, totalHits) {
     }).join('');
     galleryEl.insertAdjacentHTML('beforeend', galleryItemsEl);
 
-    // totalCards+=40;
-    // console.log(totalHits, totalCards);
-
   const gallery = new SimpleLightbox('.gallery a', {
     overlay: true,
     captionDelay: 250,
   });
 
+  totalCards+=array.length;
+  totalHit = totalHits;
+
   if (galleryItemsEl.length===0) {
     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+    loadMore.classList.add("hidden");
   }
   else {
-    loadMore.classList.remove("hidden");
+    if (totalCards===totalHit) {
+      loadMore.classList.add("hidden");
+      Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+    } else{
+    loadMore.classList.remove("hidden");}
   }
-
-  totalHit = totalHits;
-  return totalHit;
 }
 
 function render(e,page) {
-  loadMore.classList.add("hidden");
-  if (inputValue!=inputEl.value) {
-    galleryEl.innerHTML = '';
-    page=1;
-    totalCards = 40;
-    
-  }
   e.preventDefault();
-  inputValue = inputEl.value;
-  totalCards+=40;
-  findEl(inputValue,page);
-  return totalCards;
+    if (inputValue!=inputEl.value || (document.querySelector('.load-more.hidden') !== null)) {
+      galleryEl.innerHTML = '';
+      page=1;
+      totalCards = 0;
+    }
+    inputValue = inputEl.value;
+    if (inputValue.match(/[^\s]/g)===null) {
+      loadMore.classList.add("hidden");
+      galleryEl.innerHTML = '';
+    } else {
+      findEl(inputValue,page);
+    }
 }
 
 formSubmit.addEventListener('submit', (e)=>{render(e ,page)})
 
 loadMore.addEventListener('click', (e)=>{
-  if (totalCards<=totalHit) {
-    page += 1;
-    render(e,page+1);
-  }
-  else {
-    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-  }
+  page ++;
+  console.log(page);
+    render(e,page);
 })
 
 
